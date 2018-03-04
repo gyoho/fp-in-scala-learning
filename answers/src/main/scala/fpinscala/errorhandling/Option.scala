@@ -25,8 +25,7 @@ sealed trait Option[+A] {
     case Some(a) => f(a)
   }
 
-  def orElse[B>:A](ob: => Option[B]): Option[B] =
-    this map (Some(_)) getOrElse ob
+  def orElse[B>:A](ob: => Option[B]): Option[B] = this map (Some(_)) getOrElse ob
 
   /*
   Again, we can implement this with explicit pattern matching.
@@ -89,7 +88,11 @@ object Option {
   def sequence[A](a: List[Option[A]]): Option[List[A]] =
     a match {
       case Nil => Some(Nil)
-      case h :: t => h flatMap (hh => sequence(t) map (hh :: _))
+//      case h :: t => h flatMap (hh => sequence(t) map (hh :: _))
+      case h :: t => for {
+        hh <- h
+        tt <- sequence(t)
+      } yield hh :: tt
     }
   /*
   It can also be implemented using `foldRight` and `map2`. The type annotation on `foldRight` is needed here; otherwise

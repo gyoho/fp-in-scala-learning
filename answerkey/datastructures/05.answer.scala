@@ -9,3 +9,7 @@ def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
     case Cons(h,t) if f(h) => dropWhile(t, f) 
     case _ => l
   }
+
+List(1,2,3,4)
+
+def f(num: Int): Boolean = num % 2 == 0
