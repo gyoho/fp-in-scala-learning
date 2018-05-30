@@ -38,7 +38,20 @@ object MyModule {
 
   // Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+  def fib(n: Int): Int = {
+    @annotation.tailrec
+    def go(n: Int, pre: Int, cur: Int): Int = {
+      if (n <= 0) pre
+      else go(n - 1, cur, pre + cur)
+    }
+    go(n, 0, 1)
+  }
+
+  def fibb(n: Int): Int = {
+    if (n <= 1) n
+    else fibb(n - 1) + fibb(n - 2)
+  }
+
 
   // This definition and `formatAbs` are very similar..
   private def formatFactorial(n: Int) = {
@@ -102,22 +115,20 @@ object MonomorphicBinarySearch {
   // point numbers
   // Ideally, we could generalize this to work for any `Array` type,
   // so long as we have some way of comparing elements of the `Array`
-  def binarySearch(ds: Array[Double], key: Double): Int = {
+  def binarySearch(ds: Array[Double], key: Double): Option[Int] = {
     @annotation.tailrec
-    def go(low: Int, mid: Int, high: Int): Int = {
-      if (low > high) -mid - 1
+    def go(low: Int, mid: Int, high: Int): Option[Int] = {
+      if (low > high) None // not found
       else {
         val mid2 = (low + high) / 2
-        val d = ds(mid2) // We index into an array using the same
-                         // syntax as function application
-        if (d == key) mid2
+        val d = ds(mid2)
+        if (d == key) Some(mid2)
         else if (d > key) go(low, mid2, mid2-1)
         else go(mid2 + 1, mid2, high)
       }
     }
     go(0, 0, ds.length - 1)
   }
-
 }
 
 object PolymorphicFunctions {
@@ -146,11 +157,13 @@ object PolymorphicFunctions {
     @annotation.tailrec
     def loop(n: Int) : Boolean = {
       if (n >= as.length - 1) true
-      else if (gt(as(n + 1), as(n))) loop(n + 1)
+      else if (!gt(as(n + 1), as(n))) loop(n + 1)
       else false
     }
     loop(0)
   }
+
+  isSorted(Array(1,3,6), (a: Int, b: Int) => a < b)
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
